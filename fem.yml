@@ -1,15 +1,12 @@
 - hosts: localhost
   become: true
+  pre_tasks:
+    - name: Update cache
+      apt:
+        update_cache: true
+      tags:
+        - zsh
+        - node
   tasks:
-    - name: Install zsh
-      apt: name=zsh
-    - name: Change shell
-      shell: chsh -s `which zsh`
-    - name: Install oh-my-zsh
-      shell: curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh
-    - name: Install zsh plugin for auto-suggestions
-      ansible.builtin.git:
-        repo: "https://github.com/zsh-users/zsh-autosuggestions.git"
-        dest: "~/.oh-my-zsh/plugins/zsh-autosuggestions"
-    - name: Update plugins in .zshrc
-      shell: sed -i 's/(git/(git zsh-autosuggestions/' ~/.zshrc
+    - include: tasks/zsh.yml
+    - include: tasks/node.yml
